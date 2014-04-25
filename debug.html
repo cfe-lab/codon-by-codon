@@ -1,0 +1,54 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<title>Codon by codon analysis</title>
+	<link href='css/style.css' rel='stylesheet' type='text/css' />
+</head>
+
+<body>
+
+<div class="top_header"></div>
+
+<div class="middle_content">
+
+	<h1>Codon by codon analysis (<a href="http://brockman-srv.mbb.sfu.ca/~B_Team_iMac/wiki/index.php/Useful_Tools">Return to main menu</a>)</h1>
+
+	<div class="instructions">
+		<p><b>Synopsis:</b> Codon by codon analysis - a technique that independently looks at each coordinate and determines whether the presence or absence of a particular amino acid is significantly associated with a change in function.</p>
+		<p><b>Instructions:</b> Each line represents one function/protein pair. The function (For example, CD4 downregulation) and <i>aligned</i> peptide sequence must be tab delimited. All sequences must be the same length. The function must be a number. The min count filters out coordinate/amino entries with too few data to be meaningfully interpreted - use this to control statistical power. It can take a few minutes for this analysis to be completed - results are sent to the specified email address. Please refer to the <a href="help.html">explanation page</a> for additional information on how this analysis works. The description field is not used in the analysis, it is strictly to help you track your analyses. You may want to use the <a href="http://brockman-srv.mbb.sfu.ca/~B_Team_iMac/qValue/">q-value calculator</a> after generating p-values with this tool.</p>
+		<p><b>Warning:</b> Do not have any additional hidden space/tab characters at the end of a line. Do not have a newline character at the end of the input. Copy exactly two tab-delimited columns from excel. Don't include the title/header row. <b>Do not submit multiple analyses at once.</b></p>
+	</div>
+
+	<form name="myForm" method="post" action="../cgi-bin/test.py" onSubmit="return true;">
+
+		<textarea class="samples" id="functionProtein" name="functionProtein" wrap="off">0.786	MGGKWSKRNVVEWPTVRERMRRAEPAADGVGAVSRDLEKHGAITSSNTATNNAACAWLEAQEEEEVGFPVRPQVPLRPMTYRAAVDLSHFLKEKGGLGGLIHSQKRQDILDLWVYHTQGYFPDWQNYTPGPGIRYPLCFGWCFKLVPVEPDKVEEANEGENNSLLHPMSLHGMEDPEGEVLMWKFDSRLAFHHMARELHPEYYKDC
+0.982	MGGKWSKSSMVGWPKVRERMRRAEPAADGVGAVSRDLEKHGAITSSNTAANNAACAWLEAQEDEEVGFPVRPQVPLRPMTYKAAIDLSHFLKEKGGLEGLIYSQKRQDILDLWVYHTQGFFPDWQNYTPGPGVRYPLTFGWCFKLVPVDPEKVEEANEGENNSLLHPMSLHGMEDTEKEVLAWRFDSLLAFRHMAREVHPEYYKDC
+1.021	MGSKWSKSSVVGWPDVRERMRRAEPAADGVGAVSRDLERHGAITSGNTATNNADCAWLEAQEDEEVGFPVRPQVPLRPMTHRAAMDLSHFLRDKGGLDGLIWSQKRQDILDLWVYHTQGFFPDWQNYTPGPGTRFPLTFGWCFKLVPVELEKVEEANEGENNSLLHPMSQHGMEDPEKEVLAWRFDSRLAFQHMARELHPEYYKDC
+0.214	MGGKWSKCSTPGWSTIRERMRRAEPAADGVGPASRDLEKHGALTSSNTAANNAACAWLEAQEEEEVGFPVRPQVPLRPMTYKGALDLSHFLNEKGGLEGLIYSQKRQDILDLWVYNTQGFFPDWQNYTPGPGVRYPLCFGWCFKLVPVESEKVEEATEGENNSLLHPVCLHGMDDPEGEVLVWKFDSKLAFHHMAREMHPEYYKNC
+0.467	MGGKWSKCSMGGWPSVRERMRRTEPAAEGVGAASRDLERHGALTSNNTPTNNAACAWLEAQEEEEVGFPVRPQVPLRPMTYKGALDLSHFLKEKGGLEGLVYSQKRQDILDLWVFNTQGFFPDWQGYTPGPGIRYPLTFGWCFKLVPMEPDKVEEANEGENNSLLHPVSLHGMEDPEREVLVWRFDSRLAFRHVAQELHPEYYKNR
+0.801	MGGKWSKLS--GWHTIRERMRRAEPAADGVGATSRDLERHGAVTSSNTATNNGACARPEAQENDEVGFPVRPQVPLRPMTFKAAFDLSHFLKEKGGLDGLVYSQKRQEILDLWVYHTQGYLPDWQNYTPGPGTRYPLCFGWCFKLVPMEQEKVEEANEGENNRLLHPISQHGMEDPEREVLVWKFDSSLAFHHRARELHPEFYKDC</textarea>
+		<br/>
+
+		<div class="user_information">
+			<label for="minCount">Min count</label><input type="text" name="minCount" id="minCount" value="3"></input><br/>
+			<label for="analysisID">Description</label><input type="text" name="analysisID" id="analysisID" value="describe your data"></input><br/>
+			<label for="emailAddress">Email address</label><input type="text" name="emailAddress" id="emailAddress"></input><br/>
+		</div>
+
+		<br/>
+
+		<div class="submit_buttons">
+			<button type="button" class="b1" onClick="clearFields()">Reset</button>
+			<input type="submit" class="b3" name="subbtn" value="Submit">
+		</div>
+
+	</form>
+</div>
+
+<div class="bottom_footer"></div>
+
+</body>
+</html>
