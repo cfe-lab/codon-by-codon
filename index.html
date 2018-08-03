@@ -1,5 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-"http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 
 <html>
 <head>
@@ -20,9 +19,11 @@
 		<p><b>Synopsis:</b> Codon by codon analysis - a technique that independently looks at each coordinate and determines whether the presence or absence of a particular amino acid is significantly associated with a change in function.</p>
 		<p><b>Instructions:</b> Each line represents one function/protein pair. The function (For example, CD4 downregulation) and <i>aligned</i> peptide sequence must be tab delimited. All sequences must be the same length. The function must be a number. The min count filters out coordinate/amino entries with too few data to be meaningfully interpreted - use this to control statistical power. It can take a few minutes for this analysis to be completed - results are sent to the specified email address. Please refer to the <a href="help.html">explanation page</a> for additional information on how this analysis works. The description field is not used in the analysis, it is strictly to help you track your analyses. You may want to use the <a href="http://brockman-srv.mbb.sfu.ca/~B_Team_iMac/qValue/">q-value calculator</a> after generating p-values with this tool.</p>
 		<p><b>Warning:</b> Do not have any additional hidden space/tab characters at the end of a line. Do not have a newline character at the end of the input. Copy exactly two tab-delimited columns from excel. Don't include the title/header row. <b>Do not submit multiple analyses at once.</b></p>
+		<p><b>Output:</b> This analysis will email an <em>excel file</em> as its output.</p>
 	</div>
 
-	<form name="myForm" method="post" action="../cgi-bin/codon_by_codon.pl" onSubmit="return true;">
+	<!-- include onSubmit="return true;" ? -->
+	<form enctype="multipart/form-data" name="myForm" method="post" action="../cgi-bin/python/codon_by_codon.py/">
 
 		<textarea class="samples" id="functionProtein" name="functionProtein" wrap="off">0.786	MGGKWSKRNVVEWPTVRERMRRAEPAADGVGAVSRDLEKHGAITSSNTATNNAACAWLEAQEEEEVGFPVRPQVPLRPMTYRAAVDLSHFLKEKGGLGGLIHSQKRQDILDLWVYHTQGYFPDWQNYTPGPGIRYPLCFGWCFKLVPVEPDKVEEANEGENNSLLHPMSLHGMEDPEGEVLMWKFDSRLAFHHMARELHPEYYKDC
 0.982	MGGKWSKSSMVGWPKVRERMRRAEPAADGVGAVSRDLEKHGAITSSNTAANNAACAWLEAQEDEEVGFPVRPQVPLRPMTYKAAIDLSHFLKEKGGLEGLIYSQKRQDILDLWVYHTQGFFPDWQNYTPGPGVRYPLTFGWCFKLVPVDPEKVEEANEGENNSLLHPMSLHGMEDTEKEVLAWRFDSLLAFRHMAREVHPEYYKDC
@@ -46,6 +47,7 @@
 		</div>
 
 	</form>
+	<p style="color: grey; font-size: 0.6em;">Written in python.</p>
 </div>
 
 <div class="bottom_footer"></div>
