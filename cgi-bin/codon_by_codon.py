@@ -44,24 +44,24 @@ desc_string = form.getvalue("analysisID")
 
 
 if not math_utils.is_string_int(min_count):
-	print ( "<br><br><b><r style=\"color: red;\">Error:</r> Min count isn't an integer;</b> consider removing decimals or changing the value." )
+	print ( "<br><b><r style=\"color: red;\">Error:</r> Min count needs to be an integer;</b> consider removing decimals or changing the value." )
 	sys.exit(0)
 else:
 	min_count = int(min_count)
 
 if email_address_string == "":
-	print ( "<br><br><b><r style=\"color: red;\">Error:</r> Did not run analysis. You didn't enter an email address.</b> please enter an email address." )
+	print ( "<br><b><r style=\"color: red;\">Error:</r> Did not run analysis. You didn't enter an email address.</b> please enter an email address." )
 	sys.exit(0)
 
 elif not re.match(r"[^@]+@[^@]+\.[^@]+", email_address_string):
-	print ( "<br><br><b><r style=\"color: red;\">Error:</r> Did not run analysis. Your email address (<em>{}</em>) is missing necessary characters,</b> please re-check its spelling.".format(email_address_string) )
+	print ( "<br><b><r style=\"color: red;\">Error:</r> Did not run analysis. Your email address (<em>{}</em>) is missing necessary characters,</b> please re-check its spelling.".format(email_address_string) )
 	sys.exit(0)
 
 # Check if all sequences are the correct length and find said length.
 sequence_length = len(protein_sequences[0][1])  # Init the length to be the length of the first protein sequence.
 for tuple in protein_sequences:
 	if len(tuple[1]) != sequence_length:
-		print ( "<br><br><b><r style=\"color: red;\">Error:</r> All sequences are not the same length,</b> please re-check their formatting." )
+		print ( "<br><b><r style=\"color: red;\">Error:</r> All sequences are not the same length,</b> please re-check their formatting." )
 		sys.exit(0)
 
 # Check if all sequences contain valid characters.
@@ -74,16 +74,16 @@ for tuple in protein_sequences:
 	for char in tuple[1]:
 		if (char in sequence_utils.valid_protein_character_list) == False:
 			send_error = True
-			char_messages += "<br><b>{}</b> was found at position {} of row {}.".format(char, index, row_number)  # Report any invalid characters.
+			char_messages += "<br>{}</b> was found at position {} of row {}.".format(char, index, row_number)  # Report any invalid characters.
 		index += 1
 
 # Print error message.
 if send_error == True:
-	print ( "<br><br><b><r style=\"color: red;\">Error:</r> Some invalid characters have been found,</b> please remove them to run the analysis." )	
+	print ( "<br><b><r style=\"color: red;\">Error:</r> Some invalid characters have been found,</b> please remove them to run the analysis." )	
 	print ( char_messages )
 	sys.exit(0)
 
-print ( "Data raised no errors.<br><br>" )
+print ( "Data raised no errors.<br>" )
 
 # Gives a warning if the sequence contains mixture characters.
 found_warning = False
@@ -146,7 +146,6 @@ class ColumnData:
 			sum_occurrance_count += data.get_occurrances()
 		return sum_occurrance_count
 	
-	
 class ColumnOutput:
 	'''
 	ColumnOutput contains the information that will be formatted into a .xlsx file.
@@ -171,7 +170,6 @@ def _run_seq_test( column_data ):
 	w_amino = column_data.get_with().protein_char  # Get Protein char for with.
 	
 	w_decimal_list = column_data.get_with().decimal_list  # Save the decimal list for later.
-	print ( w_decimal_list )
 	w_median = math_utils.median( w_decimal_list )
 	
 	# Find the median of all not-with decimal values.
@@ -193,9 +191,7 @@ def _run_seq_test( column_data ):
 	
 	
 ##### Run tests on the given sequences. 
-	
-	
-#sequence_count = len(protein_sequences)  # How many total sequences there are.
+
 
 output_matrix = []  # This matrix holds the data that will be added to the excel file. This is a list of dictionaries, so... matrix?
 
@@ -208,61 +204,48 @@ for column_index in range(sequence_length):
 	
 	# Count how many of each protein there is.
 	data_dict = {}  # This is a dict of ProteinData classes with char as the key. -> { char : ProteinData }
-	sequence_count = 0  # This holds how many valid characters were counted.  ( For checking validity. )
+	valid_characters = 0  # This holds how many valid characters were counted.  ( For checking validity. )
 	for tuple in codon_list:
 		char = tuple[0]
 		decimal = float(tuple[1])
 
 		if not char in sequence_utils.protein_mixture_list:  # Make sure that invalid characters (mixtures) are not counted in this step.
-			sequence_count += 1
+			valid_characters += 1
 
 			if char in data_dict:
 				data_dict[ char ].decimal_list += [ decimal ]  # Populate the decimal list.
 			else:
 				data_dict[ char ] = ProteinData( char, [decimal] )  # Init the ProteinData class.
 	
-	# Find the protein (or proteins) with the most ocurrences.	
+	# Find the proteins that have an occurance value higher than minCount.
 	if len(data_dict) > 1:  # Case: there are at least two different proteins in this column.
-		most_occurrences = [ data_dict.values()[0] ]  # Init the list with the first item. 
+		valid_data = [] 
 
-		for data in data_dict.values()[1:]:  # Iterate all data classes except the first one.			
-			# Compare the current occurrence value with the top values.
-			if data.get_occurrances() > most_occurrences[0].get_occurrances():
-				most_occurrences = [ data ]  
-			elif data.get_occurrances() == most_occurrences[0].get_occurrances():  # Case: both protein data classes have equal occurance values, include both. 
-				most_occurrences += [ data ]
+		for data in data_dict.values():	
+			# Check if current char is a vaild group.
+			if data.get_occurrances() >= min_count and valid_characters - data.get_occurrances() >= min_count:
+				valid_data += [ data ]
 	else:
 		continue  # Case: all characters equal, ignore.
 
-	# Check if sequence is above min_count.
-	if most_occurrences[0].get_occurrances() < min_count or sequence_count - most_occurrences[0].get_occurrances() < min_count:
-		continue  # Case: with or without are smaller than min_count, ignore.
-		
-	#print( str(codon_list) + "<br>" + str(codon_dict) + "<br>" + str(most_occurrences) + "<br>----------<br>" )
+	if len(valid_data) <= 0:
+		continue  # Case: no valid data groups.
 	
-	# If there are more than one protein data classes with the same occurance value, do the analysis for each protein. 
-	if len(most_occurrences) <= 1:
+	# Do analysis
+	for index in range( 0, len(valid_data) ):
 		# Put with and not with into the same container.
-		data_dict.pop( most_occurrences[0].protein_char )  # Data is not needed again, data is never re-assigned to the dict.
-		
-		column_data = ColumnData( column_index, most_occurrences[0], data_dict.values() )
+		data_dict.pop( valid_data[index].protein_char )  # Temp pop.
+
+		column_data = ColumnData( column_index, valid_data[index], data_dict.values() )
 		_run_seq_test( column_data )  # Run test on the data.
 	
-	else:  #Case: do two analysis.
-		for index in range( 0, len(most_occurrences) ):
-			# Put with and not with into the same container.
-			data_dict.pop( most_occurrences[index].protein_char )  # Temp pop.
-
-			column_data = ColumnData( column_index, most_occurrences[index], data_dict.values() )
-			_run_seq_test( column_data )  # Run test on the data.
-			
-			data_dict[most_occurrences[index].protein_char] = most_occurrences[index]  # Add the item back to the dictionary. 
+		data_dict[valid_data[index].protein_char] = valid_data[index]  # Add the item back to the dictionary. 
 	
 	
 ##### Create an xlsx file.
 
 
-XLSX_FILENAME = "codon_by_codon_data"
+XLSX_FILENAME = "codon_by_codon_data{}".format( analysis_id )
 
 wb = Workbook()  # Create a new workbook.
 ws = wb.active  # Create a new page. (worksheet [ws])
@@ -289,8 +272,9 @@ print ( "<br><br>" )
 # Add the body to the message and send it.
 end_message = "This is an automatically generated email, please do not respond."
 msg_body = "The included .xlsx file ({}.xlsx) contains the requested {}. \n\nAnalysis description: {} \n\n{}".format(XLSX_FILENAME, "codon analysis data", desc_string, end_message)
+cc_address = "zbrumme@sfu.ca"
 
-if mailer.send_sfu_email("codon_analysis", email_address_string, "Codon by codon analysis: {}".format( desc_string ), msg_body, [xlsx_file]) == 0:
+if mailer.send_sfu_email("codon_analysis", email_address_string, "Codon by codon analysis: {}".format( desc_string ), msg_body, [xlsx_file], [cc_address]) == 0:
 	print ( "An email has been sent to <b>{}</b> with a full table of results. <br>Make sure <b>{}</b> is spelled correctly.".format(email_address_string, email_address_string) )
 
 # Check if email is formatted correctly.
