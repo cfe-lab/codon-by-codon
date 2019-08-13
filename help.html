@@ -1,15 +1,17 @@
-<!DOCTYPE html>
+{% extends "tool_base.html" %}
+{% load static %}
 
-<html>
-<head>
-<title></title>
-</head>
-<body>
+{% block head %}
+<title>Codon by codon help</title>
+{% endblock %}
+
+{% block content %}
+<div id="body-div">
 <h1>Codon by codon analysis: an explanation</h1>
 <p>For each coordinate, the algorithm will look for an amino acid which satisfies the minimum count rule (Described in the next paragraph), and groups the entire dataset into 2 groups: those having the amino acid at this coordinate, and those not having the amino at this coordinate, and then calculates the median score of each group, along with a kruskal-wallis p-value to measure how significantly these groups differ in their function.</p>
 <p>The min count is used to determine whether or not to test cases with very little data in either of the two groups. In such cases, it is impossible to statistically detect a difference between the two groups, and only results in a loss of stastical power when results are multiple-comparison (q-value) corrected. A min count of 3 is provided by default, as it is impossible to achieve p less than 0.05 with only N=2 in a group.</p>
 <hr/>
-<img src="images/explanation.png"/><hr/>
-<p>Click <a href="index.html">here</a> to return to the codon by codon analysis page.</p>
-</body>
-</html>
+<img src="{% static "cbc_explanation.png" %}"/><hr/>
+<p>Click <a href="../">here</a> to return to the codon by codon analysis page.</p>
+</div>
+{% endblock %}
